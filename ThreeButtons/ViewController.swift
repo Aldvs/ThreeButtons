@@ -26,7 +26,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .cyan
         view.addSubview(stackView)
         
         setupStackViewConstraints()
@@ -100,5 +99,15 @@ private extension UIButton.Configuration {
 
 class ScaleButton: UIButton {
     
+    private static var containerScale: CGFloat = 0.95
+    private static var animationDuration: Double = 0.3
+    
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: Self.animationDuration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.beginFromCurrentState, .allowUserInteraction]) {
+                self.transform = self.isHighlighted ? CGAffineTransform(scaleX: Self.containerScale, y: Self.containerScale) : .identity
+            }
+        }
+    }
 }
 
