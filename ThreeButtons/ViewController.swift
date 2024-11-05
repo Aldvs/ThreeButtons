@@ -43,11 +43,6 @@ class ViewController: UIViewController {
         for (index, textForButton) in textForButtons.enumerated() {
             let button: UIButton = { configureButton(title: textForButton, needAction: index == 2) }()
             
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-            button.backgroundColor = .systemBlue
-            button.layer.cornerRadius = 20
-            button.setTitleColor(.white, for: .normal)
-            
             stackView.addArrangedSubview(button)
         }
     }
@@ -55,11 +50,16 @@ class ViewController: UIViewController {
     private func configureButton(title: String, needAction: Bool) -> ScaleButton {
         let scaleButton = ScaleButton(configuration: .filled(title: title))
         
+        scaleButton.configurationUpdateHandler = UIButton.blueFillUpdateHandler
+        
         if needAction {
             scaleButton.addAction(UIAction(handler: { [weak self] _ in
                 self?.openModalController()
             }), for: .touchUpInside)
         }
+        
+        scaleButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        
         return scaleButton
     }
     
@@ -67,6 +67,19 @@ class ViewController: UIViewController {
         let controller = UIViewController()
         controller.view.backgroundColor = .white
         present(controller, animated: true)
+    }
+}
+
+private extension UIButton {
+    static let blueFillUpdateHandler: UIButton.ConfigurationUpdateHandler = { button in
+        switch button.tintAdjustmentMode {
+        case .dimmed:
+            button.configuration?.background.backgroundColor = .systemGray
+            button.configuration?.baseBackgroundColor = .systemGray2
+        default:
+            button.configuration?.background.backgroundColor = .systemBlue
+            button.configuration?.baseForegroundColor = .white
+        }
     }
 }
 
